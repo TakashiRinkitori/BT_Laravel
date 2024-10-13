@@ -26,6 +26,6 @@ class SendTaskCreatedNotification
      */
     public function handle(TaskCreated $event)
     {
-        Log::info('New task created: ' . $event->taskData);
+        Log::info('New task created: ' . $event->task);
     }
 }

@@ -6,7 +6,7 @@ use App\Models\ProjectModel;
 use App\Models\TaskModel;
 use Illuminate\Http\Request;
 use App\Events\TaskCreated;
-
+use App\Jobs\ProcessTask;
 class TaskController extends Controller
 {
     public function index()
@@ -17,13 +17,16 @@ class TaskController extends Controller
 
     public function create(ProjectModel $project)
     {
-        // $this->authorize('create', TaskModel::class);
         try {
             $this->authorize('create', TaskModel::class);
         } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
             return redirect()->route('tasks.index')->with('error', 'Bạn không có quyền thêm công việc.');
         }
         $projects = ProjectModel::all();
+        ProcessTask::dispatch();
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Task added to queue!']);
+        }
         return view('admin.tasks.create', compact('projects'));
     }
 
@@ -42,6 +45,8 @@ class TaskController extends Controller
         $task->description = $request->description;
         $task->completed = $request->has('completed') ? 1 : 0;
         $task->save();
+        // Gọi sự kiện tạo công việc
+        event(new TaskCreated($task));
 
         return redirect()->route('tasks.index', $request->project_id)->with('success', 'Công việc đã được thêm');
     }

@@ -9,6 +9,8 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\TaskModel;
+use Illuminate\Support\Facades\Log;
 
 class TaskCreated
 {
@@ -19,11 +21,13 @@ class TaskCreated
      *
      * @return void
      */
-    public $taskData;
+    public $task;
 
-    public function __construct($taskData)
+    public function __construct(TaskModel $task)
     {
-        $this->taskData = $taskData;
+        $this->task = $task;
+
+        Log::info('TaskCreated event fired for task: ' . $this->task->id);
     }
 
 
