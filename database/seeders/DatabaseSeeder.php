@@ -16,15 +16,15 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
         $admin = AdminModel::create([
-            'name' => 'Admin2',
-            'email' => 'admin2@gmail.com',
+            'name' => 'Admin',
+            'email' => 'admin@gmail.com',
             'password' => Hash::make('123456789'), // Hash mật khẩu trước khi lưu
         ]);
 
         // Chạy seeder cho role
-        //$this->call(RoleAndPermissionSeeder::class);
+        $this->call(RoleAndPermissionSeeder::class);
 
         // Gán vai trò cho admin
-        $admin->assignRole('user');
+        $admin->assignRole('admin');
     }
 }
